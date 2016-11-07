@@ -369,3 +369,18 @@ footer {
  	height: 500px;
 }
     
+#ekimov {
+    background: url(../img/ekimov.jpg) no-repeat center center scroll;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+    -o-background-size: cover;
+}
+
+#gmr {
+    background: url(http://gorod.mos.ru/src/theme/img/logo_ebf8fa.gif) no-repeat center center scroll;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+    -o-background-size: cover;
+}
