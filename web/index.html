@@ -3,8 +3,6 @@
 	<title>Криминальная статистика Москвы 2011-2015</title>
 
 
-
-
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	
@@ -25,13 +23,11 @@
 
 	<script src='//api.tiles.mapbox.com/mapbox.js/plugins/leaflet-omnivore/v0.3.1/leaflet-omnivore.min.js'></script>
 	
-
+	
+	<script type="text/javascript" src="leaflet-dvf/src/leaflet.dvf.linearfunctions.js"></script>>
 
     <!-- Custom CSS -->
     <link href="css/stylish-portfolio.css" rel="stylesheet">
-
-
- 	 
  	
 
 </head>
@@ -39,12 +35,17 @@
 
     <div id="map" class='leafmap'>
 	
-	<script type="text/javascript" src="js/maps.js"></script>>
+	<script type="text/javascript" src="js/maps.js"></script>
+	
 	<!-- Data -->
 	<script type="text/javascript" src = "crimstat.js"> </script>
    
     <script>
+	
+	
+	var colorFunction = new L.HSLHueFunction(new L.Point(0, 120), new L.Point(3000, 10));
 
+	
     
     function getColor(d) {
     
@@ -62,7 +63,7 @@
     function get_style(feature) {
         for (iter_num in crimData) {    
             if (feature.properties.NAME.indexOf(crimData[iter_num].name) != -1) {
-                 var fColor = getColor(crimData[iter_num].crimes2014);
+                 var fColor = colorFunction.evaluate(crimData[iter_num].crimes2014);
                 
                  newStyle = { color: "#420000", fillColor: fColor , fillOpacity: 0.4, weight: 1 };;
                 
