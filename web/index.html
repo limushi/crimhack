@@ -2,9 +2,6 @@
 <head>
 	<title>Криминальная статистика Москвы 2011-2015</title>
 
-
-
-
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	
@@ -17,104 +14,42 @@
     <meta property="og:description"
          content="Образование, культура, спорт, активность и преступность"/>
 
-
-	 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css" />
-	 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.js"></script>
-	
+ 	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.1/dist/leaflet.css" />
+ 	<script src="https://unpkg.com/leaflet@1.0.1/dist/leaflet.js"></script>
+ 
 	<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>	
  
-
 
 	<script src='//api.tiles.mapbox.com/mapbox.js/plugins/leaflet-omnivore/v0.3.1/leaflet-omnivore.min.js'></script>
 	
 	
- 	  <!-- Bootstrap Core CSS -->
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-
-     <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="leaflet-dvf/src/leaflet.dvf.linearfunctions.js"></script>
 
     <!-- Custom CSS -->
     <link href="css/stylish-portfolio.css" rel="stylesheet">
-
-    <!-- Custom Fonts -->
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-    <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
-
- 	 
  	
 
 </head>
 <body>
-	
-     
-        
-    <div id="map" class='leafmap'>
 
+    <div id="map" class='leafmap'>
 	
+	<script type="text/javascript" src="js/maps.js"></script>
 	
+	<!-- Data -->
 	<script type="text/javascript" src = "crimstat.js"> </script>
    
     <script>
-	    var map, map21, map22, map23;	
 	
-    function highlightFeature(e) {
-		var layer = e.target;
-
-		layer.setStyle({
-			weight: 5,
-			color: '#666',
-			dashArray: '',
-			fillOpacity: 0.7
-		});
-
-		if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
-			layer.bringToFront();
-		}
-
-		info.update(layer.feature.properties);
-	}
-    
+	var denominator = 1;
 	
-	var resize = function () {
-		var $map = $('#map');
-		$map.height($(window).height() - $('div.navbar').outerHeight());
-		if (map) {
-			map.invalidateSize();
-		}
-	};
-	
-	$(window).on('resize', function () {
-		resize();
-	});
-	resize();
+	var colorFunction = new L.HSLHueFunction(new L.Point(0, 70), new L.Point(Math.round(3000/denominator), 2),
+											{outputLuminosity:"47%"});
 
-	map = L.map('map').setView([55.7256992,37.5878394], 10);
-	
-
-
-
-	
-	var defStyle = { color: "#420000", fillColor: '#FED976', fillOpacity: 0.1, weight: 1 };
-
-	var defColor = "#f8e478";
-    
-    function getColor(d) {
-    
-		return d > 3000 ? '#800026' :
-				d > 2500  ? '#BD0026' :
-				d > 2000  ? '#E31A1C' :
-				d > 1500 ? '#FC4E2A' :
-				d > 1000   ? '#FD8D3C' :
-				d > 500  ? '#FEB24C' :
-				d > 100   ? '#FED976' :
-							'#FFEDA0';
-	}
-    
-    
     function get_style(feature) {
         for (iter_num in crimData) {    
             if (feature.properties.NAME.indexOf(crimData[iter_num].name) != -1) {
-                 var fColor = getColor(crimData[iter_num].crimes2014);
+                 var fColor = colorFunction.evaluate(crimData[iter_num].crimes2014);
                 
                  newStyle = { color: "#420000", fillColor: fColor , fillOpacity: 0.4, weight: 1 };;
                 
@@ -125,59 +60,16 @@
         };
             
 	      
-		return defStyle; }
+	return defStyle; 
+    	
+    }
     
-   
-    
-    
-     var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-      var osmAttrib = '&copy; <a href="http://openstreetmap.org/copyright">' +
-        'OpenStreetMap</a> contributors';
-      var osm = L.tileLayer(osmUrl, {
-        maxZoom: 18,
-        attribution: osmAttrib,
-        noWrap: true
-      }).addTo(map);
-    
-      
-
-//	var loadingControl = L.Control.loading({
-//            separate: true, spinjs:true, 
-//			spin: { lines: 15, length: 5, width: 5, radius: 4, corners: 1, rotate: 13,
-//			direction: 1, color: '#000', speed: 1, trail: 60, shadow: false, hwaccel: false, 
-//			zIndex: 2e9, top: '50%', left: '50%' 
-//			}
- //               });
-//    map.addControl(loadingControl); 
-//	map.fire("dataloading");
-	
-	var borderslayer = L.geoJson(null, { style: get_style, onEachFeature:onEachFeature });
-
-     function resetHighlight(e) {
-		borderslayer.resetStyle(e.target);
-		info.update();
-	}
-
-	
-
-	function onEachFeature(feature, layer) {
-		layer.on({
-			mouseover: highlightFeature,
-			mouseout: resetHighlight
-			
-		});
-	}
-
-	omnivore.geojson('mos_districts.geojson', null, borderslayer);
-
-	borderslayer.addTo(map);
-	
-	var legend = L.control({position: 'bottomright'});
-
+ 
 	legend.onAdd = function (map) {
 
 		var div = L.DomUtil.create('div', 'info legend'),
-			grades = [0, 100, 500, 1000, 1500, 2000, 2500, 3000],
+			grades = [0, Math.round(100/denominator), Math.round(500/denominator), Math.round(1000/denominator),
+					Math.round(1500/denominator), Math.round(2000/denominator), Math.round(2500/denominator), Math.round(3000/denominator)],
 			labels = [],
 			from, to;
 
@@ -186,7 +78,7 @@
 			to = grades[i + 1];
 
 			labels.push(
-				'<i style="background:' + getColor(from + 1) + '"></i> ' +
+				'<i style="background:' + colorFunction.evaluate(from + 1) + '"></i> ' +
 				from + (to ? '&ndash;' + to : '+'));
 		}
 
@@ -195,15 +87,6 @@
 	};
 
 	legend.addTo(map);
-	
-	// control that shows state info on hover
-	var info = L.control();
-
-	info.onAdd = function (map) {
-		this._div = L.DomUtil.create('div', 'info');
-		this.update();
-		return this._div;
-	};
 
 	info.update = function (props) {
 	    if(props) {
@@ -223,5 +106,7 @@
 	
 
 	</script>	
+	
+	<script type="text/javascript" src="js/mosregion.js"></script>>
 
 </body></html>
