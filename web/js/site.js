@@ -1,11 +1,11 @@
 // Closes the sidebar menu
   
 	// block map clicks
-	$('.map').click(function () {
+	$('.leafmap').click(function () {
 			$('.map div').css("pointer-events", "auto");
 	});
 
-	$(".map").mouseleave(function() {
+	$(".leafmap").mouseleave(function() {
 			$('.map div').css("pointer-events", "none"); 
 	});
 	
