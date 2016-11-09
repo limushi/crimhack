@@ -34,6 +34,8 @@
 	resize();
 
 	map = L.map('map').setView([55.7256992,37.5878394], 10);
+	map.setMaxBounds(L.latLngBounds(L.latLng(56.0676,38.4466),L.latLng(55.1098,36.6448)));
+	map.setMinZoom(10);
 	
 	var defStyle = { color: "#420000", fillColor: '#FED976', fillOpacity: 0.1, weight: 1 };
 
