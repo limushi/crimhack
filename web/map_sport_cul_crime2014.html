@@ -18,7 +18,9 @@
 	<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>	
  
 	<script src='//api.tiles.mapbox.com/mapbox.js/plugins/leaflet-omnivore/v0.3.1/leaflet-omnivore.min.js'></script>
-
+	
+		
+	<script type="text/javascript" src="leaflet-dvf/src/leaflet.dvf.linearfunctions.js"></script>
 
     <!-- Custom CSS -->
     <link href="css/stylish-portfolio.css" rel="stylesheet">
@@ -43,35 +45,25 @@
    
     <script>
 
+    var newArr = merge(culData, "culture", sportData, "sport");
     
-    
-    function getColor(d) {
-  
-		return d >  200 ? '#800026' :
-				d > 180  ? '#BD0026' :
-				d > 140  ? '#E31A1C' :
-				d > 120 ? '#FC4E2A' :
-				d > 80   ? '#FD8D3C' :
-				d > 40  ? '#FEB24C' :
-				d > 20   ? '#FED976' :
-							'#FFEDA0';
-	}
-    
+    var denominator = getAverage(newArr, "count");
+	
+	var colorFunction = new L.HSLHueFunction(new L.Point(0, 70), new L.Point(Math.round(3000/denominator), 2),
+											{outputLuminosity:"47%"});
     
     function get_style(feature) {
-        for (iter_num in sportData) {  
-         	if (feature.properties.NAME.indexOf(sportData[iter_num].district) != -1) {
-         		for (iter2_num in culData) {    
-		            if (feature.properties.NAME.indexOf(culData[iter2_num].district) != -1) {
-        	         	for (new_iter in crimData) {
-       						if (feature.properties.NAME.indexOf(crimData[new_iter].name) != -1) {
-                				var fColor = getColor(crimData[new_iter].crimes2014/(sportData[iter_num].sport + culData[iter2_num].culture));
+        for (iter_num in newArr) {  
+         	if (feature.properties.NAME.indexOf(newArr[iter_num].district) != -1) {
+         		 for (new_iter in crimData) {
+       				 if (feature.properties.NAME.indexOf(crimData[new_iter].name) != -1) {
+         				var fColor = colorFunction.evaluate(crimData[new_iter].crimes2014/newArr[iter_num].count);
                 	        
                  newStyle = { color: "#420000", fillColor: fColor , fillOpacity: 0.4, weight: 1 };;
                 
                  
                 return newStyle;
-            }}}}};
+            }}};
             
         };
             
@@ -85,7 +77,8 @@
 	legend.onAdd = function (map) {
 
 		var div = L.DomUtil.create('div', 'info legend'),
-			grades = [0, 20, 40, 80, 120, 140, 180, 200],
+			grades = [0, Math.round(100/denominator), Math.round(500/denominator), Math.round(1000/denominator),
+					Math.round(1500/denominator), Math.round(2000/denominator), Math.round(2500/denominator), Math.round(3000/denominator)],
 			labels = [],
 			from, to;
 
@@ -94,7 +87,7 @@
 			to = grades[i + 1];
 
 			labels.push(
-				'<i style="background:' + getColor(from + 1) + '"></i> ' +
+				'<i style="background:' + colorFunction.evaluate(from + 1) + '"></i> ' +
 				from + (to ? '&ndash;' + to : '+'));
 		}
 
@@ -109,7 +102,8 @@
 	info.update = function (props) {
 	    if(props) {
 	    
-	    var data;
+	    var data="", cr_data="", cu_data="";
+	    
 	    for (iter_num in sportData) {    
             if (props.NAME.indexOf(sportData[iter_num].district) != -1) {
                 data = sportData[iter_num] }
@@ -125,7 +119,6 @@
                 cu_data = culData[iter_num] }
 	    }
 	    
-	   
 		this._div.innerHTML = '<h4>Район</h4>' +  (data ?
 			'<b>' + props.NAME + '</b><br /> Количество спортобъектов:' + data.sport +
 			'<br /> Количество культобъектов:' + cu_data.culture +
