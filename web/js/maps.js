@@ -63,4 +63,30 @@
 	};
 
     
-      
+    function getAverage(arr, name) {
+		sum=0;
+		count = 0;
+		for(i=0; i< arr.length;i++)
+			if (arr[i][name]) {
+				sum = sum + arr[i][name]; 
+				count = count +1;
+			}
+				
+		return Math.round(sum/count);
+			
+	}
+	
+	function merge(arr1, name1, arr2, name2) {
+		mergeArr = new Array();
+		for(i=1;i<arr1.length;i++){
+			for(d=0;d<arr2.length;d++) {
+				if(arr1[i].district==arr2[d].district){
+					newElt = new Object();
+					newElt["district"] = arr1[i].district;
+					newElt['count'] = arr1[i][name1] + arr2[d][name2]
+					mergeArr.push(newElt);
+				}
+			}
+		}
+		return mergeArr	
+	}
