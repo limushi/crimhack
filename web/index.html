@@ -2,7 +2,6 @@
 <head>
 	<title>Криминальная статистика Москвы 2011-2015</title>
 
-
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	
@@ -24,7 +23,7 @@
 	<script src='//api.tiles.mapbox.com/mapbox.js/plugins/leaflet-omnivore/v0.3.1/leaflet-omnivore.min.js'></script>
 	
 	
-	<script type="text/javascript" src="leaflet-dvf/src/leaflet.dvf.linearfunctions.js"></script>>
+	<script type="text/javascript" src="leaflet-dvf/src/leaflet.dvf.linearfunctions.js"></script>
 
     <!-- Custom CSS -->
     <link href="css/stylish-portfolio.css" rel="stylesheet">
@@ -42,24 +41,11 @@
    
     <script>
 	
+	var denominator = 1;
 	
-	var colorFunction = new L.HSLHueFunction(new L.Point(0, 120), new L.Point(3000, 10));
+	var colorFunction = new L.HSLHueFunction(new L.Point(0, 70), new L.Point(Math.round(3000/denominator), 2),
+											{outputLuminosity:"47%"});
 
-	
-    
-    function getColor(d) {
-    
-		return d > 3000 ? '#800026' :
-				d > 2500  ? '#BD0026' :
-				d > 2000  ? '#E31A1C' :
-				d > 1500 ? '#FC4E2A' :
-				d > 1000   ? '#FD8D3C' :
-				d > 500  ? '#FEB24C' :
-				d > 100   ? '#FED976' :
-							'#FFEDA0';
-	}
-    
-    
     function get_style(feature) {
         for (iter_num in crimData) {    
             if (feature.properties.NAME.indexOf(crimData[iter_num].name) != -1) {
@@ -82,7 +68,8 @@
 	legend.onAdd = function (map) {
 
 		var div = L.DomUtil.create('div', 'info legend'),
-			grades = [0, 100, 500, 1000, 1500, 2000, 2500, 3000],
+			grades = [0, Math.round(100/denominator), Math.round(500/denominator), Math.round(1000/denominator),
+					Math.round(1500/denominator), Math.round(2000/denominator), Math.round(2500/denominator), Math.round(3000/denominator)],
 			labels = [],
 			from, to;
 
@@ -91,7 +78,7 @@
 			to = grades[i + 1];
 
 			labels.push(
-				'<i style="background:' + getColor(from + 1) + '"></i> ' +
+				'<i style="background:' + colorFunction.evaluate(from + 1) + '"></i> ' +
 				from + (to ? '&ndash;' + to : '+'));
 		}
 
