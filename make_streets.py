@@ -22,7 +22,7 @@ def append_district_by_street(filename="2016-10-20_gms_stat.json", streetfield =
     print("Done %s addrs" % str(len([item for item in data if "district" in item.keys()])))                
                     
     with open("districts_"+filename, 'w') as jsonfile:
-        json.dump(data, jsonfile)     
+        json.dump(data, jsonfile, ensure_ascii=False)     
         
 def make_by_district(district):
     with open("moscow_buildings.json") as bigfile:
