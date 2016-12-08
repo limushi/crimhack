@@ -76,6 +76,17 @@
 			
 	}
 	
+	function getMax(arr, name) {
+		max=0;
+		for(i=0; i< arr.length;i++)
+			if (arr[i][name] > max) {
+				max = arr[i][name]; 
+			}
+				
+		return Math.round(max);
+			
+	}
+	
 	function merge(arr1, name1, arr2, name2) {
 		mergeArr = new Array();
 		for(i=1;i<arr1.length;i++){

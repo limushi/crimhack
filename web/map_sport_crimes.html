@@ -1,0 +1,117 @@
+<html>
+<head>
+	<title>Криминальная статистика</title>
+	
+	<meta charset="utf-8">
+	<meta property="og:title" content="Криминальная статистика"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:url" content="http://sites.mithron.me"/>
+    <meta property="og:image" content="http://sites.mithron.me/project-cover.png"/>
+    <meta property="og:site_name" content="Криминальная статистика"/>
+    <meta property="og:description"
+         content="Образование и преступность"/>
+
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.1/dist/leaflet.css" />
+ 	<script src="https://unpkg.com/leaflet@1.0.1/dist/leaflet.js"></script>
+ 	
+	<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>	
+
+	<script src='//api.tiles.mapbox.com/mapbox.js/plugins/leaflet-omnivore/v0.3.1/leaflet-omnivore.min.js'></script>
+	
+		
+	<script type="text/javascript" src="leaflet-dvf/src/leaflet.dvf.linearfunctions.js"></script>
+
+    <!-- Custom CSS -->
+    <link href="css/stylish-portfolio.css" rel="stylesheet">
+
+</head>
+<body>
+	
+     
+        
+    <div id="map" class='leafmap'>
+	
+		<script type="text/javascript" src="js/maps.js"></script>>
+	<!-- Data -->
+	
+		
+	<script type="text/javascript" src = "fdata.js"> </script>
+	
+   
+    <script>
+	
+  	var denominator = getAverage(fData, "sport");
+  	var crimeMax = getMax(fData, "crimes");
+	
+	var colorFunction = new L.HSLHueFunction(new L.Point(0, 70), new L.Point(Math.round(crimeMax/denominator), 2),
+											{outputLuminosity:"47%"});
+    
+    function get_style(feature) {
+        for (iter_num in fData) {    
+            if (feature.properties.NAME.indexOf(fData[iter_num].district) != -1) {
+       			  
+                var fColor = colorFunction.evaluate(fData[iter_num].crimes/fData[iter_num].sport);
+                
+                 newStyle = { color: "#420000", fillColor: fColor , fillOpacity: 0.4, weight: 1 };;
+                
+                 
+                return newStyle;
+            };
+            
+        };
+            
+	      
+		return defStyle; }
+    
+   
+
+	legend.onAdd = function (map) {
+
+		var div = L.DomUtil.create('div', 'info legend'),
+
+			grades = [0, Math.round(0.1 * crimeMax/denominator), Math.round(0.2*crimeMax/denominator), Math.round(0.3*crimeMax/denominator),
+					Math.round(0.4*crimeMax/denominator), Math.round(0.5*crimeMax/denominator), Math.round(0.6*crimeMax/denominator),
+					Math.round(0.7*crimeMax/denominator), Math.round(0.8*crimeMax/denominator), Math.round(0.9*crimeMax/denominator),
+					Math.round(crimeMax/denominator)],
+			labels = [],
+			from, to;
+
+		for (var i = 0; i < grades.length; i++) {
+			from = grades[i];
+			to = grades[i + 1];
+
+			labels.push(
+				'<i style="background:' + colorFunction.evaluate(from + 1) + '"></i> ' +
+				from + (to ? '&ndash;' + to : '+'));
+		}
+
+		div.innerHTML = labels.join('<br>');
+		return div;
+	};
+
+	legend.addTo(map);
+	
+	info.update = function (props) {
+	    if(props) {
+	    
+	    var data;
+	    for (iter_num in fData) {    
+            if (props.NAME.indexOf(fData[iter_num].district) != -1) {
+                data = fData[iter_num] }
+	    }
+	    
+	    console.log(props);
+	    
+		this._div.innerHTML = '<h4>Района</h4>' +  (data ?
+			'<b>' + props.NAME + '</b><br /> Количество спортобъектов :' + data.sport +
+			'<br /> Преступность: ' + Math.round(data.crimes)
+			: 'Наведите курсор на район');
+	}};
+
+	info.addTo(map);
+	
+
+	</script>	
+	<script type="text/javascript" src="js/mosregion.js"></script>>
+
+</body></html>
