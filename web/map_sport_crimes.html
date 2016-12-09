@@ -9,7 +9,7 @@
     <meta property="og:image" content="http://sites.mithron.me/project-cover.png"/>
     <meta property="og:site_name" content="Криминальная статистика"/>
     <meta property="og:description"
-         content="Образование и преступность"/>
+         content="Спорт и преступность"/>
 
 	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.1/dist/leaflet.css" />
  	<script src="https://unpkg.com/leaflet@1.0.1/dist/leaflet.js"></script>
@@ -102,7 +102,7 @@
 	    
 	    console.log(props);
 	    
-		this._div.innerHTML = '<h4>Района</h4>' +  (data ?
+		this._div.innerHTML = '<h4>Район</h4>' +  (data ?
 			'<b>' + props.NAME + '</b><br /> Количество спортобъектов :' + data.sport +
 			'<br /> Преступность: ' + Math.round(data.crimes)
 			: 'Наведите курсор на район');

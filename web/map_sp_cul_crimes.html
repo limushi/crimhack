@@ -102,9 +102,10 @@
 	    
 	    console.log(props);
 	    
-		this._div.innerHTML = '<h4>Района</h4>' +  (data ?
+		this._div.innerHTML = '<h4>Район</h4>' +  (data ?
 			'<b>' + props.NAME + '</b><br /> Количество культобъектов :' + data.culture +
 			'</b><br /> Количество спортобъектов :' + data.sport +
+			'</b><br /> Количество других объектов :' + data.rest +
 			'<br /> Преступность: ' + Math.round(data.crimes)
 			: 'Наведите курсор на район');
 	}};
